@@ -40,7 +40,7 @@ else
     DOWNLOAD_URL="https://github.com/DerGoogler/psh/releases/download/${VERSION}/$ONLINE_BINARY"
 fi
 
-DEST_DIR="$PREFIX/usr/bin"
+DEST_DIR="$PREFIX/bin"
 DEST_PATH="${DEST_DIR}/${BINARY_NAME}"
 
 echo "Installing ${BINARY_NAME} version ${VERSION} for architecture ${ARCH_DL}..."
