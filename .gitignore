@@ -1,2 +1,7 @@
 libs/*
 obj
+release
+*.o
+*.a
+*.so
+*.dll
