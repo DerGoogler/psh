@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- Configuration ---
-NDK_ROOT="/home/jimmy/android-ndk-r27c"
+# NDK_ROOT is not set
 PROJECT_ROOT="$(pwd)"
 TERMUX_BIN="/data/data/com.termux/files/usr/bin"
 BINARY_NAME="psh"
