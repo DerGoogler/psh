@@ -3,6 +3,9 @@
 
 #ifndef PSH_VERSION
 #define PSH_VERSION -1
-#endif // PSH_VERSION
+#endif  // PSH_VERSION
 
-#endif // PSH_HPP
+#define SYSTEM_BASH "/system/bin/bash"
+#define SYSTEM_SH "/system/bin/sh"
+
+#endif  // PSH_HPP

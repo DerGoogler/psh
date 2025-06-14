@@ -8,4 +8,7 @@
 #define ANDROID_SYSPATHS "/system/bin:/system/xbin"
 #define EXTRA_SYSPATHS "/system/bin:/system/xbin:/data/data/com.termux/files/usr/bin"
 
+#define TERMUX_BASH TERMUX_PREFIX "/bin/bash"
+#define TERMUX_SH TERMUX_PREFIX "/bin/sh"
+
 #endif // TERMUX_HPP

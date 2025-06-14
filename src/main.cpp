@@ -262,10 +262,10 @@ int main(int argc, char *argv[]) {
             startup_script += quote_argument(arg) + " ";
     } else {
         std::vector<std::string> shells_to_try = {
-            TERMUX_PREFIX "/bin/bash",
-            TERMUX_PREFIX "/bin/sh",
-            "/system/bin/bash",
-            "/system/bin/sh",
+            TERMUX_BASH,
+            SYSTEM_BASH,
+            TERMUX_SH,
+            SYSTEM_SH,
         };
 
         if (!alt_shell.empty())
