@@ -1,4 +1,4 @@
-name: Build psh
+name: Build
 
 on:
   push:

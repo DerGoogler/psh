@@ -1,0 +1,65 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    env:
+      NDK_VERSION: r27c
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+          add-to-path: true
+
+      - name: Set NDK_ROOT environment variable
+        run: echo "NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+
+      - name: Make build script executable
+        run: chmod +x ./build.sh
+
+      - name: Get commit count
+        id: commit_count
+        run: echo "COUNT=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Run build script for release
+        run: ./build.sh --release
+        env:
+          NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+
+      - name: Create Git Tag
+        id: create_tag
+        run: |
+          TAG_NAME="v${{ steps.commit_count.outputs.COUNT }}"
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag $TAG_NAME -m "Release $TAG_NAME"
+          git push origin $TAG_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.create_tag.outputs.TAG_NAME }}
+          name: Release ${{ steps.create_tag.outputs.TAG_NAME }}
+          body: |
+            Automated release based on commit count.
+            Version: ${{ steps.create_tag.outputs.TAG_NAME }}
+          draft: false
+          prerelease: false
+          files: release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
