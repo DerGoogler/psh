@@ -18,7 +18,7 @@
 // declare environ
 extern char **environ;
 
-const std::string PSH_VERSION = "8.6.0";
+const std::string PSH_VERSION = "1.0.0";
 bool PSH_DEBUG = false;
 std::string LOG_FILE;
 
