@@ -80,19 +80,19 @@ You can install `psh` easily on Termux using the provided install script, which 
 Run this command directly in Termux (curl or wget):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/DerGoogler/psh/main/install.sh | sh
+curl -fsSL https://psh.dergoogler.com/install.sh | sh
 ```
 
 Or with wget:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/DerGoogler/psh/main/install.sh | sh
+wget -qO- https://psh.dergoogler.com/install.sh | sh
 ```
 
 By default, it installs the latest stable release. You can specify a version like so:
 
 ```bash
-VERSION=1.0.0 curl -fsSL https://raw.githubusercontent.com/DerGoogler/psh/main/install.sh | sh
+VERSION=1.0.0 curl -fsSL https://psh.dergoogler.com/install.sh | sh
 ```
 
 **Note:** The installer aborts if run as root inside Termux, ensuring safe installation.
