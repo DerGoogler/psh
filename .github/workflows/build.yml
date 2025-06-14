@@ -1,0 +1,41 @@
+name: Build psh
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    env:
+      NDK_VERSION: r27c
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up NDK
+      id: setup-ndk
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: ${{ env.NDK_VERSION }}
+        add-to-path: true
+
+    - name: Set NDK_ROOT environment variable
+      run: echo "NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+
+    - name: Make build script executable
+      run: chmod +x ./build.sh
+
+    - name: Run build script for release
+      run: ./build.sh --release
+      env:
+        NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: psh-binaries-${{ github.sha }}
+        path: release/
