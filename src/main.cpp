@@ -1,6 +1,7 @@
 #include <pwd.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
 #include <algorithm>
 #include <array>
 #include <cerrno>
@@ -15,10 +16,13 @@
 #include <string>
 #include <vector>
 
+#include "psh.hpp"
+#include "shell.hpp"
+#include "termux.hpp"
+
 // declare environ
 extern char **environ;
 
-const std::string PSH_VERSION = "1.0.0";
 bool PSH_DEBUG = false;
 std::string LOG_FILE;
 
@@ -99,7 +103,7 @@ sudo usage:
 )EOF" << std::endl;
 }
 
-std::string get_shell_basename(const std::string& shell_path) {
+std::string get_shell_basename(const std::string &shell_path) {
     auto pos = shell_path.find_last_of('/');
     if (pos != std::string::npos)
         return shell_path.substr(pos + 1);
@@ -204,13 +208,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    const std::string TERMUX_FS = "/data/data/com.termux/files";
-    const std::string TERMUX_PREFIX = TERMUX_FS + "/usr";
-    const std::string TERMUX_PATH = TERMUX_PREFIX + "/bin:" + TERMUX_PREFIX + "/bin/applets";
-    const std::string ROOT_HOME = TERMUX_FS + "/home/psh";
-    const std::string ANDROID_SYSPATHS = "/system/bin:/system/xbin";
-    const std::string EXTRA_SYSPATHS = "/sbin:/sbin/bin";
-
     std::map<std::string, std::string> exp_env;
     std::string root_shell;
 
@@ -270,6 +267,7 @@ int main(int argc, char *argv[]) {
             "/system/bin/bash",
             "/system/bin/sh",
         };
+
         if (!alt_shell.empty())
             root_shell = alt_shell;
         else {
@@ -307,16 +305,31 @@ int main(int argc, char *argv[]) {
     for (const auto &[key, value] : exp_env)
         env_built += key + "=" + value + " ";
 
+    std::vector<SuBinary> su_to_try = {
+        // Possible Magisk su binaries
+        {"/sbin/su", true},
+        {"/debug_ramdisk/su", true}
+        // Possible non-Magisk su binaries
+        {"/system/xbin/su", false},
+        {"/system/bin/su", false},
+        {"/system/bin/su", false},
+        {"/data/local/bin/su", false},
+        {"/data/local/xbin/su", false},
+        {"/data/local/su", false},
+    };
+
     std::string su_binary_path;
     bool magisk_mode = false;
-    if (is_executable("/sbin/su")) {
-        su_binary_path = "/sbin/su";
-        magisk_mode = true;
-    } else if (is_executable("/system/xbin/su")) {
-        su_binary_path = "/system/xbin/su";
-    } else if (is_executable("/system/bin/su")) {
-        su_binary_path = "/system/bin/su";
-    } else {
+
+    for (const auto &su : su_to_try) {
+        if (is_executable(su.path)) {
+            su_binary_path = su.path;
+            magisk_mode = su.is_magisk;
+            break;
+        }
+    }
+
+    if (su_binary_path.empty()) {
         std::cerr << "No su binary found" << std::endl;
         return 1;
     }

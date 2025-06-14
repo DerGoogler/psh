@@ -3,7 +3,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := psh
-LOCAL_SRC_FILES := main.cpp
+
+LOCAL_SRC_FILES += $(patsubst $(LOCAL_PATH)/%, %, $(wildcard src/**/*.cpp))
 
 # Add these linker flags:
 LOCAL_LDLIBS := -llog -landroid -lc++_static -latomic

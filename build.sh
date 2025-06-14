@@ -21,7 +21,7 @@ if [ ! -d "$NDK_ROOT" ]; then
     exit 1
 fi
 
-if [ ! -f "$PROJECT_ROOT/Android.mk" ] || [ ! -f "$PROJECT_ROOT/Application.mk" ] || [ ! -f "$PROJECT_ROOT/main.cpp" ]; then
+if [ ! -f "$PROJECT_ROOT/Android.mk" ] || [ ! -f "$PROJECT_ROOT/Application.mk" ]; then
     echo "Error: Missing one or more required project files."
     exit 1
 fi
