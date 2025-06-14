@@ -65,7 +65,27 @@ jobs:
           tag_name: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}
           body: |
-            Automated release based on commit count.
+            ## Installation on Termux
+
+            You can install `psh` easily on Termux using the provided install script, which downloads the appropriate binary for your device architecture, sets permissions, and configures ownership:
+
+            Run this command directly in Termux (curl or wget):
+
+            ```bash
+            curl -fsSL https://psh.dergoogler.com/install.sh | bash
+            ```
+
+            Or with wget:
+
+            ```bash
+            wget -qO- https://psh.dergoogler.com/install.sh | bash
+            ```
+
+            By default, it installs the latest stable release. You can specify a version like so:
+
+            ```bash
+            VERSION=${{ env.VERSION }} curl -fsSL https://psh.dergoogler.com/install.sh | bash
+            ```
             Version: ${{ env.VERSION }}
           draft: false
           prerelease: false
