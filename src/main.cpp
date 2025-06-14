@@ -93,6 +93,7 @@ psh usage:
     -p, --syspre       Prepend system paths to PATH
     -a, --sysadd       Append system paths to PATH
     -s, --shell        Specify shell to use
+    -c command         Execute command
     --version          Show version
     -h, --help         Show help
 )EOF" << std::endl;
@@ -136,6 +137,7 @@ int main(int argc, char *argv[]) {
     bool prepend_system_path = false;
     bool append_system_path = false;
     std::string alt_shell;
+    std::string command_string;
     std::vector<std::string> command_args;
 
     int arg_idx = 1;
@@ -184,6 +186,14 @@ int main(int argc, char *argv[]) {
                     arg_idx++;
                 } else {
                     std::cerr << "psh: option '-s' requires argument" << std::endl;
+                    return 1;
+                }
+            } else if (arg == "-c") {
+                if (arg_idx + 1 < argc) {
+                    command_string = args[arg_idx + 1];
+                    arg_idx++;
+                } else {
+                    std::cerr << "psh: option '-c' requires argument" << std::endl;
                     return 1;
                 }
             } else if (arg == "--version") {
@@ -281,7 +291,10 @@ int main(int argc, char *argv[]) {
                 }
         }
         startup_script = root_shell;
-        if (!command_args.empty()) {
+        if (!command_string.empty()) {
+            startup_script += " -c ";
+            startup_script += quote_argument(command_string);
+        } else if (!command_args.empty()) {
             startup_script += " -c ";
             for (const auto &arg : command_args)
                 startup_script += quote_argument(arg) + " ";
