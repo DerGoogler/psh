@@ -9,8 +9,8 @@ LOCAL_SRC_FILES := src/main.cpp
 
 # Add these linker flags:
 LOCAL_LDLIBS := -llog -landroid -lc++_static -latomic
-LOCAL_CFLAGS := -Wall -Wextra
-LOCAL_CPPFLAGS := -std=c++17 -frtti -fexceptions -DPSH_VERSION=$(COMMIT_COUNT)
+LOCAL_CFLAGS := -Wall -Wextra -Wunused-but-set-variable
+LOCAL_CPPFLAGS := -std=c++17 -frtti -fexceptions -DPSH_VERSION=$(COMMIT_COUNT) -Wunused-but-set-variable
 
 # For NDK r21+ you might need this:
 LOCAL_ARM_MODE := arm

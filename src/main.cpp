@@ -60,7 +60,10 @@ void gather_debug_info() {
 }
 
 bool is_executable(const std::filesystem::path &p) {
-    return std::filesystem::exists(p) && access(p.c_str(), X_OK) == 0;
+    struct stat sb;
+    if (stat(p.c_str(), &sb) != 0)
+        return false;
+    return (sb.st_mode & S_IFREG) && (access(p.c_str(), X_OK) == 0);
 }
 
 std::string readlink_f(const std::filesystem::path &p) {
