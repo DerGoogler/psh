@@ -222,7 +222,7 @@ int main(int argc, char *argv[]) {
             }
             new_home = ROOT_HOME;
             exp_env["PREFIX"] = TERMUX_PREFIX;
-            exp_env["TMPDIR"] = ROOT_HOME + "/.tmp";
+            exp_env["TMPDIR"] = ROOT_HOME "/.tmp";
             if (getenv("LD_PRELOAD"))
                 exp_env["LD_PRELOAD"] = getenv("LD_PRELOAD");
 
@@ -239,7 +239,7 @@ int main(int argc, char *argv[]) {
             if (getenv("LD_LIBRARY_PATH"))
                 exp_env["LD_LIBRARY_PATH"] = std::string(getenv("LD_LIBRARY_PATH")) + ":/system/lib64";
             else {
-                std::string asp = ANDROID_SYSPATHS + ":" + EXTRA_SYSPATHS;
+                std::string asp = ANDROID_SYSPATHS ":" EXTRA_SYSPATHS;
                 new_path = prepend_system_path ? asp + ":" + new_path : new_path + ":" + asp;
             }
         } else {
@@ -262,8 +262,8 @@ int main(int argc, char *argv[]) {
             startup_script += quote_argument(arg) + " ";
     } else {
         std::vector<std::string> shells_to_try = {
-            TERMUX_PREFIX + "/bin/bash",
-            TERMUX_PREFIX + "/bin/sh",
+            TERMUX_PREFIX "/bin/bash",
+            TERMUX_PREFIX "/bin/sh",
             "/system/bin/bash",
             "/system/bin/sh",
         };
@@ -290,7 +290,7 @@ int main(int argc, char *argv[]) {
         unsetenv("LD_PRELOAD");
 
         std::string shell_name = get_shell_basename(root_shell);
-        std::string pshrc_path = ROOT_HOME + "/.pshrc";
+        std::string pshrc_path = ROOT_HOME "/.pshrc";
 
         if (std::filesystem::exists(pshrc_path)) {
             if (shell_name == "bash") {
@@ -308,7 +308,7 @@ int main(int argc, char *argv[]) {
     std::vector<SuBinary> su_to_try = {
         // Possible Magisk su binaries
         {"/sbin/su", true},
-        {"/debug_ramdisk/su", true}
+        {"/debug_ramdisk/su", true},
         // Possible non-Magisk su binaries
         {"/system/xbin/su", false},
         {"/system/bin/su", false},
@@ -339,7 +339,7 @@ int main(int argc, char *argv[]) {
     if (!switch_user.empty())
         exec_args.push_back(switch_user);
     exec_args.push_back("-c");
-    exec_args.push_back(magisk_mode ? ("PATH=" + TERMUX_PREFIX + "/bin env -i " + env_built + startup_script)
+    exec_args.push_back(magisk_mode ? ("PATH=" TERMUX_PREFIX "/bin env -i " + env_built + startup_script)
                                     : (env_built + startup_script));
 
     std::vector<char *> c_args;
